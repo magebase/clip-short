@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClipFactory Autonomous Cockpit — Multi-Platform Fleet Command</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #07090E; color: #f1f5f9; font-family: Inter, system-ui, sans-serif; }
+    .card { background: #0E131F; border: 1px solid #1E293B; border-radius: 0.75rem; }
+    .badge-live { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-staged { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-bounty { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  </style>
+</head>
+<body class="p-6 max-w-7xl mx-auto space-y-6">
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">CLIPFACTORY AUTONOMOUS DAEMON</span>
+        <span class="text-xs text-slate-400">10-Minute Cadence &bull; Pod-03 Clips Fleet</span>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight mt-1">Multi-Platform Fleet Cockpit &amp; Bounty Command</h1>
+      <p class="text-sm text-slate-400">10 Dedicated CLIP Channels &bull; 3 Meta Super-Channels &bull; Cloudflare R2 Ingest &bull; Lili Checking Automated Claims</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Daemon Active (600s loop)
+      </span>
+    </div>
+  </header>
+
+  <!-- KPI Row -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="card p-4">
+      <div class="text-xs text-slate-400 uppercase font-medium">24h Fleet Views</div>
+      <div class="text-2xl font-bold mt-1 text-white">1,482,900</div>
+      <div class="text-xs text-emerald-400 mt-1">+48.2% across YouTube, TikTok &amp; Meta</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs text-slate-400 uppercase font-medium">Rendered Masters</div>
+      <div class="text-2xl font-bold mt-1 text-indigo-400">418 Clips</div>
+      <div class="text-xs text-slate-400 mt-1">All in 54/46 Split with Vector Emojis</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs text-slate-400 uppercase font-medium">Daily Quota Status (Pod 03)</div>
+      <div class="text-2xl font-bold mt-1 text-emerald-400">42 / 85 Safe</div>
+      <div class="text-xs text-slate-400 mt-1">Headroom Gate: 43 uploads remaining</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs text-slate-400 uppercase font-medium">Bounties Claimed (Lili Bank)</div>
+      <div class="text-2xl font-bold mt-1 text-amber-400">$3,840.00</div>
+      <div class="text-xs text-slate-400 mt-1">Wyoming LLC Form 5472 Logged</div>
+    </div>
+  </section>
+
+  <!-- Dedicated Channel Grid -->
+  <section class="card p-5 space-y-4">
+    <h2 class="text-lg font-bold text-white flex items-center justify-between">
+      <span>Dedicated CLIP Fleet Roster (10 Channels)</span>
+      <span class="text-xs font-normal text-slate-400">Auto-routed by FormatRouter Niche Classifier</span>
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+      <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+        <div class="text-xs font-semibold text-emerald-400">CLIP-01</div>
+        <div class="text-sm font-bold text-white">Banter Central</div>
+        <div class="text-xs text-slate-400">@BanterCentralDaily</div>
+        <div class="mt-2 text-xs font-medium text-slate-300">Format: Action-Tag &bull; Banter</div>
+      </div>
+      <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+        <div class="text-xs font-semibold text-amber-400">CLIP-02</div>
+        <div class="text-sm font-bold text-white">Finance Crime</div>
+        <div class="text-xs text-slate-400">@FinanceCrimeAutopsies</div>
+        <div class="mt-2 text-xs font-medium text-slate-300">Format: Explainer &bull; Fraud</div>
+      </div>
+      <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+        <div class="text-xs font-semibold text-blue-400">CLIP-03</div>
+        <div class="text-sm font-bold text-white">Science Shockers</div>
+        <div class="text-xs text-slate-400">@ScienceShockersDaily</div>
+        <div class="mt-2 text-xs font-medium text-slate-300">Format: Whiteboard &bull; Cosmos</div>
+      </div>
+      <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+        <div class="text-xs font-semibold text-rose-400">CLIP-04</div>
+        <div class="text-sm font-bold text-white">Stream Rage</div>
+        <div class="text-xs text-slate-400">@StreamRageClutches</div>
+        <div class="mt-2 text-xs font-medium text-slate-300">Format: Phonk &bull; Esports</div>
+      </div>
+      <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800">
+        <div class="text-xs font-semibold text-cyan-400">CLIP-05</div>
+        <div class="text-sm font-bold text-white">Silicon Drama</div>
+        <div class="text-xs text-slate-400">@SiliconDramaDaily</div>
+        <div class="mt-2 text-xs font-medium text-slate-300">Format: 54/46 Split &bull; Tech</div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
