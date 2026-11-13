@@ -1,0 +1,38 @@
+# Operating System & Editors
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Python & Build
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# Media & Temporary Artifacts
+*.mp4
+*.webm
+*.mov
+*.wav
+*.mp3
+*.m4a
+*.png
+*.jpg
+*.jpeg
+*.sqlite
+*.sqlite3
+*.db
+/renders/
+/downloads/
+/scratch/
+/tmp/
