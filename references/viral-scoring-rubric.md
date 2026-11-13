@@ -1,73 +1,164 @@
-# 100-Point Viral Scoring Rubric & Auto-Critique
+# Production Gate & Editorial Scoring Rubric
 
-Every candidate short cut must be programmatically evaluated against this 100-point multi-modal critique rubric before rendering. Clips scoring below **80/100** are rejected or sent for automated parameter re-tuning.
+Two independent systems:
 
----
+1. **Production quality gate — pass/fail.** One critical failure rejects the export regardless of editorial score.
+2. **Editorial performance potential — 100 points.** Prioritizes edits for review; it is not a predicted probability of virality.
 
-## 1. Rubric Dimension Weights
-
-$$\text{Total Score} = S_{\text{hook}} + S_{\text{coherence}} + S_{\text{linguistic}} + S_{\text{mobile}} + S_{\text{captions}} + S_{\text{audio}} + S_{\text{density}}$$
-
-| Dimension | Max Points | Weight | Metric Evaluated | Pass Threshold |
-| :--- | :--- | :--- | :--- | :--- |
-| **1. Hook Impact (0.0–1.0s)** | 20 pts | 20% | Opening energy, cold visual change, high-curiosity keyword in first 1.5s | $\ge 15/20$ |
-| **2. Narrative Coherence** | 20 pts | 20% | Standalone thought structure (Hook $\to$ Context $\to$ Conflict $\to$ Punchline) | $\ge 16/20$ |
-| **3. Linguistic Boundaries** | 15 pts | 15% | Clean sentence cold open (0 fillers) & terminal punctuation punchline | $\ge 12/15$ |
-| **4. Mobile Composition** | 15 pts | 15% | Golden 54/46 framing, headroom clearance, zero UI/chrome clutter | $\ge 12/15$ |
-| **5. Kinetic Typography** | 10 pts | 10% | Safe zone clearance ($MarginV=920$), 0 collision with seam/card, semantic chunks | $\ge 8/10$ |
-| **6. Audio Dynamics** | 10 pts | 10% | EBU R128 loudness ($-14.0\text{ LUFS}$), peak $\le -1.0\text{ dBTP}$, room tone micro-fades | $\ge 8/10$ |
-| **7. Information Density** | 10 pts | 10% | Zero dead air ($> 0.8\text{s}$ silence/freeze), continuous visual progression | $\ge 7/10$ |
+Never blend them into one number. A beautifully told clip with a debug overlay is not an 85/100; it is `REJECTED_RENDER`.
 
 ---
 
-## 2. Detailed Dimension Breakdown
+## 1. Production Quality Gate (Pass/Fail)
 
-### 1. Hook Impact (20 Points)
-- **20 pts**: First spoken word occurs within $0.05\text{s} - 0.15\text{s}$. Spoken words introduce an immediate high-stakes claim, contrarian thesis, or provocative number. Top Curiosity Hook Pill badge renders at $y=135$.
-- **15 pts**: Speech starts within $0.3\text{s}$. Hook is engaging but requires mild context.
-- **10 pts**: Speech starts after $0.5\text{s}$ or opens with introductory transition ("So today...", "Well...").
-- **0 pts**: Opening dead air $> 0.8\text{s}$ or incomprehensible mumble. Immediate disqualification.
+Each row must pass. No averaging, no compensation.
 
-### 2. Narrative Coherence (20 Points)
-- **20 pts**: A complete, self-contained miniature story. The viewer needs zero context from the parent livestream to understand the thesis, conflict, and payoff.
-- **15 pts**: Complete thought, but minor contextual pronouns ("he said", "that project") left slightly ambiguous.
-- **10 pts**: Anecdote is understandable but punchline feels abrupt or unresolved.
-- **0 pts**: Thought cuts off mid-argument or mid-sentence. Immediate disqualification.
+| Area | Pass condition | Critical failure |
+| :--- | :--- | :--- |
+| **Campaign compliance** | Duration, sound, hashtags, mentions, content, disclosure, account, and audience rules validated against the loaded campaign config | Any missing or violated rule $\to$ `HUMAN_REVIEW` or `REJECTED_RENDER` |
+| **Rights and source** | Approved source URL, license/fair-use basis, attribution present | Unclear rights $\to$ `HUMAN_REVIEW` |
+| **Render integrity** | Exported MP4 passes `ffprobe`; no debug overlay; no cursor; no black frames | Any visual artifact $\to$ `REJECTED_RENDER` |
+| **Crop integrity** | Important subjects, labels, arrows, hands, and results fully in frame | Cropped diagram/action $\to$ `REJECTED_RENDER` |
+| **Readability** | Primary labels $\ge 24\text{px}$, secondary $\ge 18\text{px}$ at $1080$ width | Unreadable at mobile size $\to$ `REJECTED_RENDER` |
+| **Caption accuracy** | Displayed captions match re-transcribed exported audio; negations, entities, numbers intact | Mismatch $\to$ `REJECTED_RENDER` |
+| **Caption collisions** | No overlap with face, source text, diagram labels, or divider | Collision $\to$ `REJECTED_RENDER` |
+| **Audio** | Integrated loudness within campaign/house spec; true peak $\le -1.0\text{ dBTP}$; no clipping | Clipping or out-of-spec loudness $\to$ `REJECTED_RENDER` |
+| **Visual continuity** | No unintended freezes $> 0.8\text{s}$, no dead air $> 0.6\text{s}$, no broken transitions | Failure $\to$ `REJECTED_RENDER` |
+| **A/V sync** | Drift $\le 80\text{ms}$ | Failure $\to$ `REJECTED_RENDER` |
+| **Thumbnail** | One headline, unobstructed face, no subtitle fragments | Failure $\to$ `REJECTED_RENDER` |
+| **Metadata** | Five text layers distinct and semantically consistent | Duplicate or contradictory layers $\to$ `RENDERED_PACKAGING_HOLD` |
 
-### 3. Linguistic Boundaries & Sound Snapping (15 Points)
-- **15 pts**:
-  - **Start Snapping**: Snapped to initial phoneme of first meaningful word. Zero pre-speech conversational fillers (`um`, `uh`, `you know`, `like`). Pre-speech room tone padding: $60\text{ms} - 80\text{ms}$ with $35\text{ms}$ audio fade-in (`afade=t=in:d=0.035`).
-  - **End Snapping**: Snapped strictly to terminal punctuation (`.`, `!`, `?`). Zero cutoffs of trailing syllables. Natural acoustic room decay padding: $120\text{ms} - 220\text{ms}$ with $80\text{ms}$ audio micro fade-out (`afade=t=out:d=0.08`).
-- **10 pts**: Clean cut, but room tone decay is slightly tight ($< 100\text{ms}$) or contains a minor breath intake.
-- **0 pts**: Clip cuts mid-word or ends on a conjunction/preposition (`and`, `but`, `because`, `which`).
-
-### 4. Mobile Framing & Saliency (15 Points)
-- **15 pts**: Speaker framed in upper 54% pane with natural headroom ($+0.32 \times fh$). Bottom supporting pane shows primary content centered at 1000 px width with 40 px side margins. Seam cleanly divider-lined. Zero browser tabs, taskbars, or fragmented UI scrollbars.
-- **10 pts**: Clear split, but supporting content has minor margin imbalance ($< 25\text{px}$) or slight sidebar visibility.
-- **0 pts**: Head/chin cutoff in speaker pane, or supporting content unreadable/clipped.
-
-### 5. Kinetic Typography & Safe Zones (10 Points)
-- **10 pts**: Subtitle baseline positioned at $y = 1000$ (`MarginV = 920`). Over $180\text{px}$ clearance above supporting content ($y \ge 1180$). 0.0 px collision with divider seam ($y = 1038$). 3 to 5 words per semantic chunk, kinetic punch animation on keyword, vector emoji rendering.
-- **7 pts**: Legible subtitles in safe zone, but slight 1-2 word staccato rhythm.
-- **0 pts**: Subtitle baseline $> 1030\text{px}$ (overlaps divider seam), horizontal margin $< 25\text{px}$, or overlapping burnt-in text.
-
-### 6. Audio Dynamics & Mastering (10 Points)
-- **10 pts**: Broadcast integrated loudness normalized to $-14.0\text{ LUFS} \pm 0.5\text{ LUFS}$. True peak clamped to $\le -1.0\text{ dBTP}$. Zero audio clicks, pops, or clipping.
-- **7 pts**: Loudness between $-16.0$ and $-12.0\text{ LUFS}$, no audible clipping.
-- **0 pts**: Distorted peaks ($> 0.0\text{ dBFS}$) or low volume ($< -20.0\text{ LUFS}$).
-
-### 7. Information Density & Pacing (10 Points)
-- **10 pts**: Total duration strictly within $18.0\text{s} - 22.5\text{s}$ (max $23.5\text{s}$). Visual transformation or punch-in every $2.5\text{s} - 3.5\text{s}$. Zero freeze frames $> 0.8\text{s}$.
-- **7 pts**: Duration within $16\text{s} - 25\text{s}$, smooth pacing.
-- **0 pts**: Duration $< 15\text{s}$ or $> 28\text{s}$, or frozen static video $> 1.0\text{s}$.
+Production verdict: `PASS` or `REJECTED_RENDER` / `HUMAN_REVIEW`. There is no partial pass.
 
 ---
 
-## 3. Disqualification Flags (Auto-Fail to 0 Points)
-A candidate clip is immediately disqualified (`REJECTED_QUALITY`) if ANY of the following flags trip:
-1. `HAS_BURNT_SUBTITLES`: Persistent hardcoded subtitles detected in subtitle band ($0.52 \le y \le 0.88$).
-2. `BLURRY_FOOTAGE`: Multi-frame Laplacian variance $< 65.0$.
-3. `DANGLING_END`: Terminal cut falls on a preposition, conjunction, or incomplete sentence clause.
-4. `FILLER_COLD_OPEN`: Clip begins with filler syllable (`um`, `uh`, `like`).
-5. `MISMATCHED_METADATA`: HUD headline or title does not match spoken discourse in the clip.
-6. `COLLISION_SUBTITLES`: Subtitles collide with divider seam ($y = 1038$) or supporting visual cards.
+## 2. Editorial Performance-Potential Score (100 Points)
+
+Apply only after the production gate passes.
+
+| Dimension | Weight | What earns points |
+| :--- | :--- | :--- |
+| **Hook strength** | 15 | First frame and first words create an immediate claim, question, or number; speech starts within $0.15\text{s}$; no throat-clearing |
+| **Standalone comprehension** | 15 | A viewer with zero parent-VOD context understands the premise, subject, and stakes |
+| **Narrative / payoff quality** | 20 | Complete arc: tension, development, resolution. The ending lands and is not truncated. The story is worth the runtime |
+| **Visual relevance and progression** | 15 | Every visual change explains or advances the story; layout suits the source archetype; no decorative split-screen on a source that does not need it |
+| **Mobile framing** | 10 | Subject readable, headroom correct, no UI clutter, no cut-off subject, captions clear of face |
+| **Caption accuracy and readability** | 10 | Verbatim, well-chunked, readable on a phone, emphasis supports meaning |
+| **Pacing and information density** | 10 | No dead air, meaningful visual event every 1.5–3.5s, runtime efficient for the story |
+| **Originality and audience fit** | 5 | The edit has a distinct angle and fits the channel/campaign audience |
+
+### Thresholds
+- $\ge 85$: strong publish candidate.
+- $70 - 84$: publishable after addressing the weakest dimension.
+- $55 - 69$: `EDITORIAL_HOLD`; rework hook, story, or visuals.
+- $< 55$: reject the edit; choose a different moment.
+
+### Calibration Warning
+These scores prioritize work. They are not calibrated probabilities of virality. Actual campaign metrics from [performance-feedback.md](../subskills/performance-feedback.md) are the authority for format, hook, runtime, and treatment decisions.
+
+---
+
+## 3. Dimension Scoring Anchors
+
+### Hook Strength (15)
+- **15**: First frame contains the strongest visual or number; speech starts within $0.15\text{s}$; the claim is legible without setup.
+- **10**: Speech starts within $0.4\text{s}$; hook requires mild context.
+- **5**: Slow intro or definitional opening.
+- **0**: Dead air $> 0.8\text{s}$ or no hook.
+
+### Standalone Comprehension (15)
+- **15**: No unresolved references; names and stakes are clear from the cut.
+- **10**: One minor unresolved pronoun or reference.
+- **5**: Requires parent-stream context to follow.
+- **0**: Incomprehensible without external context.
+
+### Narrative / Payoff (20)
+- **20**: Clear tension, meaningful development, satisfying terminal payoff; setup compressed rather than payoff cut.
+- **15**: Complete but slightly rushed or uneven.
+- **10**: Abrupt or unresolved ending.
+- **0**: No arc or clipped mid-thought.
+
+### Visual Relevance and Progression (15)
+- **15**: Layout follows the source archetype; each visual beat maps to the spoken beat; progressive diagram or scene tracking where appropriate; no filler split-screen.
+- **10**: Mostly relevant, one gratuitous or static stretch.
+- **5**: Generic treatment applied to a source that does not fit it.
+- **0**: Visuals obscure or contradict the story.
+
+### Mobile Framing (10)
+- **10**: Subject clear, face unobstructed, no clutter, labels readable.
+- **7**: Minor margin or clutter issue.
+- **0**: Cut-off subject or unreadable content.
+
+### Caption Accuracy and Readability (10)
+- **10**: Verbatim, natural 3–5 word chunks, emphasis supports meaning, no collisions.
+- **7**: Legible but staccato or one weak cue.
+- **0**: Wrong words, dropped negation, or collisions.
+
+### Pacing and Information Density (10)
+- **10**: No dead air; meaningful visual event every 1.5–3.5s; runtime matched to story.
+- **7**: One static stretch or slightly loose pacing.
+- **0**: Frozen visuals, dead air, or runtime padded far beyond the story.
+
+### Originality and Audience Fit (5)
+- **5**: Distinct angle, appropriate for the channel and campaign audience.
+- **3**: Competent but generic.
+- **0**: Duplicative of an existing edit or wrong audience.
+
+---
+
+## 4. Auto-Fail Flags (Production Gate)
+
+Any of these is a hard failure:
+
+1. `DEBUG_OVERLAY_VISIBLE`
+2. `CURSOR_VISIBLE`
+3. `HAS_BURNT_SUBTITLES`
+4. `BLURRY_FOOTAGE` (Laplacian variance $< 65.0$)
+5. `CAPTION_AUDIO_MISMATCH`
+6. `DANGLING_END`
+7. `FILLER_COLD_OPEN`
+8. `CROPPED_DIAGRAM_OR_ACTION`
+9. `UNREADABLE_MOBILE_TEXT`
+10. `FACE_OCCLUSION`
+11. `SOURCE_TEXT_COLLISION`
+12. `THUMBNAIL_DUPLICATE_OR_OCCLUDED`
+13. `CAMPAIGN_RULE_VIOLATION`
+14. `RIGHTS_UNCLEAR`
+15. `AUDIO_OUT_OF_SPEC`
+16. `AV_SYNC_DRIFT`
+
+---
+
+## 5. Scoring Record
+
+Each evaluated candidate stores:
+
+```json
+{
+  "clip_id": "string",
+  "production_gate": "PASS | REJECTED_RENDER | HUMAN_REVIEW",
+  "critical_failures": [],
+  "editorial": {
+    "hook": 0,
+    "standalone_comprehension": 0,
+    "narrative_payoff": 0,
+    "visual_relevance": 0,
+    "mobile_framing": 0,
+    "captions": 0,
+    "pacing_density": 0,
+    "originality_fit": 0,
+    "total": 0
+  },
+  "format": {
+    "visual_archetype": "string",
+    "narrative_archetype": "string",
+    "editing_treatment": "string",
+    "layout_mode": "string"
+  },
+  "runtime_seconds": 0.0,
+  "campaign_id": "string",
+  "metrics_hook": null
+}
+```
+
+Real performance metrics are joined later by [performance-feedback.md](../subskills/performance-feedback.md) using `clip_id`.

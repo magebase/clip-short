@@ -2,6 +2,18 @@
 
 Automated multi-channel fleet scheduling, staged private release protocol, YouTube Data API quota management, and platform safety rules.
 
+This subskill applies only to explicitly authorized publishing operations. Default production behavior is human-gated distribution; automatic bulk distribution is disabled.
+
+---
+
+## 0. Distribution Authorization
+
+1. **Human approval is mandatory by default.** A rendered, verified clip enters the approval queue; a human decides whether it is published.
+2. **Bulk auto-distribution is disabled by default.** A campaign may authorize scheduled release only after explicit human enablement.
+3. **Unique edits only.** Never publish the same edit to multiple accounts or mass-produce near-identical outputs to chase cadence. Campaign and platform rules prohibit duplicate and low-effort submissions.
+4. **Campaign preflight is required.** Duration, sound, required content, hashtags, mentions, and audience rules come from the loaded campaign config.
+5. **Unsupported financial automation is out of scope.** Do not automate bounty claims, payout operations, or payment actions that lack a documented API and explicit authorization. The core deliverable is a verified video plus its submission package.
+
 ---
 
 ## 1. Universal Staged Private Release Standard
@@ -46,6 +58,7 @@ $$\text{If } N_{\text{uploads}}(\text{pod}) \ge 85 \implies \text{HALT POD UPLOA
 ## 3. Channel Cadence Ceilings
 - **Clip Factory Channels**: Max 2 to 3 clips per channel per 24h rolling cycle.
 - **Minimum Publish Window**: Spaced at least $\ge 4.0\text{ hours}$ apart via `compute_staged_publish_time()`.
+- **No 10-minute publishing cadence**: A 10-minute production loop may prepare candidates, but it must not publish every 10 minutes. Volume never overrides quality, originality, or campaign rules.
 - **Fail-Closed Cooldown**: If YouTube returns `uploadLimitExceeded`, mark the asset as `STAGED_LOCAL`, engage a 24-hour channel cooldown, and proceed with other non-conflicting tasks.
 
 ---

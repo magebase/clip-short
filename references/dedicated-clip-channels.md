@@ -61,3 +61,17 @@ NICHE_ROUTING = {
     "speedrun":    {"ch": "CLIP-10", "super": "super_01_scale_velocity"}
 }
 ```
+
+---
+
+## 4. Routing Preconditions
+
+Keyword routing assigns a candidate to a channel; it does not authorize publishing.
+
+1. The clip must pass the production gate and editorial threshold.
+2. Campaign preflight must pass for the target platform and campaign.
+3. The edit must be unique: no duplicate or near-identical output across channels.
+4. A human must approve the submission.
+5. Official APIs only; no browser automation on social platforms.
+
+Cadence targets never justify publishing weak, duplicative, or non-compliant clips.

@@ -1,80 +1,116 @@
-# clip-short
+# clip-short v2.0
 
-> **Autonomous AI Short Clipper & Split-Screen Viral Video Production Skill for Agent CLIs (`agy`, `claude`, `codex`, `cursor`, `copilot`, `openhands`)**
+> **Format-aware AI Short Clipper & Vertical Video Production Skill for Agent CLIs (`agy`, `claude`, `codex`, `cursor`, `copilot`, `openhands`)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-magebase%2Fclip--short-181717.svg?logo=github)](https://github.com/magebase/clip-short)
-[![Antigravity CLI](https://img.shields.io/badge/Antigravity%20CLI-Compatible-indigo.svg)](https://github.com/magebase/clip-short)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange.svg)](https://github.com/magebase/clip-short)
 [![FFmpeg](https://img.shields.io/badge/Engine-FFmpeg%20%7C%20OpenCV%20%7C%20Whisper-green.svg)](assets/ffmpeg-filter-templates.md)
-[![Daemon](https://img.shields.io/badge/Production-10m%20Autonomous%20Cadence-emerald.svg)](subskills/autonomous-10m-cadence-daemon.md)
 
 ---
 
 ## 1. Overview
 
-`clip-short` is an agent-native video engineering skill designed to autonomously discover, score, cut, compose, package, and publish high-retention viral vertical short videos ($9:16$ for YouTube Shorts, TikTok, Instagram Reels, Facebook Reels) from multi-hour desktop livestreams, podcasts, keynotes, and coding broadcasts.
+`clip-short` turns long-form video into verified vertical shorts ($9:16$ for YouTube Shorts, TikTok, Instagram Reels, Facebook Reels). v2.0 is a general editing system, not a single streamer recipe:
 
-Unlike basic re-framing scripts, `clip-short` mirrors the production-tested ClipFactory architecture:
-1. **The 6 Mega-Viral Format Templates** (`FormatRouter`) modeling IShowSpeed, CaseOh, PirateSoftware, Theo, and N3ON.
-2. **Golden 54/46 Split-Screen Mobile Geometry** with dynamic MediaPipe BlazeFace speaker framing and OpenCV primary card saliency.
-3. **Linguistic Boundary & Acoustic Snapping** with Whisper word-level timestamps (complete sentence cold opens, terminal punchline decay).
-4. **Kinetic Spring Bounce Captions (`\fscx124`)** with vector emojis (`\fnSymbola`) and top white headline cards.
-5. **Continuous 10-Minute Cadence Engine** with Expected Value ($EV$) candidate ranking, Cloudflare R2 CDN ingestion, and multi-platform fleet distribution.
-6. **Automated View-Gated Bounty Claims** into business bank accounts and tax accounting.
+1. **Three-axis classification** — visual source archetype, narrative archetype, editing treatment.
+2. **Adaptive layouts** — full-screen, speaker switching, adaptive split, PiP, progressive diagram zoom, scene tracking, or minimalist documentary.
+3. **Narrative-first boundaries** — complete thought arcs with campaign-aware runtime. Payoff is never truncated for an arbitrary duration target.
+4. **Verified transcription** — domain lexicons, entity checks, source-subtitle diff, human review of low-confidence terms.
+5. **Five distinct text layers** — HUD headline, subtitles, YouTube title, thumbnail headline, campaign caption.
+6. **Pass/fail production gate plus editorial scoring** — one critical render defect rejects the export regardless of editorial score.
+7. **Human-gated distribution** — production may be autonomous; publishing requires approval. Bulk auto-distribution is off by default.
+8. **Permanent regression fixtures** — Lex, Theo, and Veritasium renders guard against known failures.
 
 ---
 
 ## 2. Core Capabilities
 
-### 1. The 6 Mega-Viral Format Templates ([`subskills/format-router-templates.md`](subskills/format-router-templates.md))
-- `FORMAT_1_PHONK_FREEZE`: IRL Physical Stunt + Phonk Freeze-Frame + Camera Shake (IShowSpeed 53.3M benchmark).
-- `FORMAT_2_REACTION_STACK`: 50/50 Top/Bottom Reaction Stack with Seam Captions (CaseOh 18.8M benchmark).
-- `FORMAT_3_ACTION_TAG_SITCOM`: Non-Verbal Action-Tag Sitcom Edit with Neon *TAGS* (IShowSpeed 23.8M benchmark).
-- `FORMAT_4_DISCORD_BROLL`: Discord Voice Rant + Satisfying High-Engagement B-Roll (xQc & Jynxzi 7.3M benchmark).
-- `FORMAT_5_WHITEBOARD_EXPLAINER`: High-Retention Code / Architecture Monologue (PirateSoftware & Theo 13.2M benchmark).
-- `FORMAT_N3ON_PING_PONG`: IRL Two-Speaker Sitcom Ping-Pong Edit with Neural YuNet tracking (N3ON & Clavicular 1.2M+ benchmark).
+### 1. Three-Axis Format Router ([`subskills/format-router-templates.md`](subskills/format-router-templates.md))
+- **Axis A**: 14 visual source archetypes (`MULTICAM_PODCAST`, `CORNER_PIP_SCREEN`, `NARRATED_ILLUSTRATION`, `SLIDE_DECK`, `SPORTS_ACTION`, and others).
+- **Axis B**: 10 narrative archetypes (`CURIOSITY_MYSTERY`, `CONTRARIAN_OPINION`, `EXPLANATION`, `DEBATE`, `PERSONAL_STORY`, and others).
+- **Axis C**: 9 editing treatments (`FULLSCREEN_CROP`, `DYNAMIC_SPEAKER_SWITCHING`, `ADAPTIVE_SPLIT`, `PROGRESSIVE_DIAGRAM_ZOOM`, `SCENE_BY_SCENE`, and others).
+- Legacy viral presets remain as named treatment combinations; they are not the classifier.
 
-### 2. Golden 54/46 Split-Screen Mobile Architecture ([`subskills/pip-split-screen-geometry.md`](subskills/pip-split-screen-geometry.md))
-- **Top Dominant Speaker Pane ($1080 \times 1040$ / $54.17\%$)**: Aspect-locked $2.45 \times fh$ head-and-shoulders crop with $+0.32 \times fh$ natural headroom offset. Zero forehead or chin cutoffs.
-- **Bottom Supporting Card Pane ($1080 \times 880$ / $45.83\%$)**: OpenCV Sobel edge-density contour extraction isolating primary tweets, terminal code, or architecture diagrams, scaled to 1000px with 40px side margins. Ultrawide inputs receive a dark blurred ambient canvas fallback.
-- **Seam Separation**: 4px slate seam (`#1E293B`) at $y = 1038$ px.
-- **5-Phase Motivated Progression**: $112\%$ speaker hook zoom $\to$ neutral split $\to$ $108\%$ supporting card zoom $\to$ neutral split $\to$ $110\%$ punchline zoom.
+### 2. Adaptive Layout Engine ([`subskills/pip-split-screen-geometry.md`](subskills/pip-split-screen-geometry.md))
+- **Golden 54/46 split preset** for corner-PiP streamers: $1080 \times 1040$ speaker pane and $1080 \times 880$ supporting pane, 4px seam at $y = 1038$.
+- **Layout decision matrix**: portrait speaker, landscape podcast, two speakers, corner facecam, panoramic diagram, screen recording, illustration, B-roll.
+- **Progressive diagram tracking** for panoramic architecture diagrams: zoom and pan to the referenced node instead of shrinking the whole diagram into a pane.
+- **Saliency isolation** that excludes chat columns and sidebars.
+- **Semantic beats**: visual focus changes with the subject, not with arbitrary timestamps.
 
-### 3. Linguistic Narrative & Acoustic Decay Snapping ([`subskills/linguistic-boundary-snapping.md`](subskills/linguistic-boundary-snapping.md))
-- **Runtime Target**: Strictly $18.0\text{s} - 22.5\text{s}$ (max $23.5\text{s}$).
-- **Cold Open**: Starts strictly at the beginning of a complete sentence or question. Eliminates conversational fillers (`um`, `uh`, `like`), adds $60 - 80\text{ms}$ room tone, and applies a $35\text{ms}$ audio micro fade-in (`afade=t=in:d=0.035`).
-- **Terminal Snapping**: Cut points snap strictly to terminal punctuation (`.`, `!`, `?`). Adds $120 - 180\text{ms}$ acoustic decay padding with an $80\text{ms}$ audio micro fade-out (`afade=t=out:d=0.08`).
+### 3. Campaign-Aware Narrative Boundaries ([`subskills/linguistic-boundary-snapping.md`](subskills/linguistic-boundary-snapping.md))
+- Runtime resolution order: campaign rule $\to$ narrative completion $\to$ house range.
+- House default $18.0\text{s} - 22.5\text{s}$ with a flexible ceiling up to $23.5\text{s}$; a longer complete story may pass when the campaign allows it.
+- Complete-sentence cold opens, zero fillers, $35\text{ms}$ fade-in, terminal punctuation snapping, $150 - 250\text{ms}$ decay, $80\text{ms}$ fade-out.
+- Compress setup before cutting payoff.
 
-### 4. Kinetic Typography Safe Zones & Vector Emojis ([`subskills/kinetic-typography-safe-zones.md`](subskills/kinetic-typography-safe-zones.md))
-- Subtitle baseline locked at $y = 1000$ (`MarginV = 920`) over the speaker's torso.
-- Over $180\text{px}$ clearance above supporting content ($y \ge 1180$) and divider ($y = 1038$) for guaranteed **0.0px collision**.
-- 3 to 5 words per semantic chunk, spring pop animation (`\fscx124\fscy124\t(0,75,\fscx108\fscy108)`), multi-tier neon palettes, and vector emojis (`\fnSymbola`).
-- Top White Headline Card Badge at $y = 135$ (`Anton-Regular.ttf`, 40pt, solid white card container with 2px dark border), fading out smoothly at $3.0\text{s} - 3.8\text{s}$.
+### 4. Face-Aware Kinetic Typography ([`subskills/kinetic-typography-safe-zones.md`](subskills/kinetic-typography-safe-zones.md))
+- Caption baseline computed from face landmarks and layout; `MarginV = 920` is the 54/46 preset value, not a universal law.
+- Rejects caption collisions with faces, source text, diagram labels, and dividers.
+- 3–5 word semantic chunks, zero staccato flashes, zero duplicate cues.
+- Spring pop animation, accent colors, and tone-appropriate vector emojis.
+- Top curiosity pill at $y = 135$, fading out at $3.0\text{s} - 3.8\text{s}$.
 
-### 5. 100% Faithful Transcript Packaging ([`subskills/faithful-metadata-packaging.md`](subskills/faithful-metadata-packaging.md))
-- Direct transcript grounding via LLM / deterministic NLP: Top HUD headline (3–6 words Title Case, max 38 chars, 0 trailing punctuation) and YouTube title derived strictly from literal spoken words.
-- Curiosity-Gap Redundancy Gate: If headline lexical overlap with opening audio exceeds 65%, automatically reformulates into a curiosity thesis question.
+### 5. Transcript Verification & Five-Layer Packaging ([`subskills/transcript-verification.md`](subskills/transcript-verification.md), [`subskills/faithful-metadata-packaging.md`](subskills/faithful-metadata-packaging.md))
+- Domain dictionaries, acronym and entity checks, forced alignment, source-subtitle diff, anomaly detection.
+- Five separate layers: HUD headline, subtitles, YouTube title, thumbnail headline, campaign caption.
+- Faithful paraphrase allowed; every entity, number, and claim must be supported by the cut.
+- Curiosity-gap overlap gate ($\le 0.65$) prevents the headline from repeating the opening line.
+- Dedicated thumbnail stage: one headline, unobstructed face, no subtitle fragments.
 
-### 6. Pre-Render & Post-Render Quality Defense ([`subskills/pre-render-quality-gates.md`](subskills/pre-render-quality-gates.md))
-- Multi-Frame Pixel Sharpness: Laplacian variance $\sigma_L^2 \ge 65.0$. Muddy or upscaled 1080p crops fail-closed.
-- Burnt-In Subtitle Gate: Scans subtitle band ($0.52 \le y \le 0.88$) for pre-existing hardcoded captions.
-- Audio Loudness: EBU R128 integrated loudness normalized to $-14.0\text{ LUFS}$ ($\le -1.0\text{ dBTP}$).
-- 100-Point Viral Rubric: Automated scoring across Hook, Coherence, Linguistic Boundaries, Mobile Framing, Captions, Audio, and Info Density.
+### 6. Production Gate & Editorial Scoring ([`references/viral-scoring-rubric.md`](references/viral-scoring-rubric.md), [`subskills/pre-render-quality-gates.md`](subskills/pre-render-quality-gates.md))
+- **Production gate (pass/fail)**: campaign compliance, rights, render integrity, crop integrity, readability, caption accuracy, caption collisions, audio, continuity, A/V sync, thumbnail, metadata.
+- **Editorial score (100)**: hook 15, standalone comprehension 15, narrative/payoff 20, visual relevance 15, mobile framing 10, captions 10, pacing 10, originality 5.
+- Rejection tests include debug overlays, visible cursors, cropped diagrams, face occlusion, source-text collisions, and unreadable mobile text.
+- Inspect the exported MP4, not the render configuration. Contact sheet at $0.25\text{s}$, $1.0\text{s}$, transitions, midpoint, and final $2.0\text{s}$.
 
-### 7. Autonomous 10-Minute Cadence & Fleet Distribution ([`subskills/autonomous-10m-cadence-daemon.md`](subskills/autonomous-10m-cadence-daemon.md))
-- Continuous 600-second loop with non-blocking file locks.
-- Cloudflare R2 CDN Ingestion via Wrangler (`wrangler r2 object put video-factory-renders/clips/clip_{id}.mp4`).
-- Syndication across 10 Dedicated CLIP Channels (`CLIP-01` to `CLIP-10`), 3 Meta Super-Channels, TikTok, and Instagram Reels.
-- Universal Staged Private Release with 150-minute transcode buffer and 85-upload safety headroom gate.
-- Automated view-gated bounty claiming into Lili Business Checking and Form 5472 tax ledger accounting.
-- Interactive Cockpit Dashboard UI ([`assets/cockpit-dashboard.html`](assets/cockpit-dashboard.html)).
+### 7. Campaign Preflight ([`subskills/campaign-preflight.md`](subskills/campaign-preflight.md))
+- Per-campaign duration, required sound, required/prohibited content, hashtags, mentions, audience, account, rights, and disclosure rules.
+- Missing or ambiguous rules fail closed to `HUMAN_REVIEW`.
+- Submission package is immutable for the edit and re-validated before release.
+
+### 8. Human-Gated Production & Performance Feedback ([`subskills/autonomous-10m-cadence-daemon.md`](subskills/autonomous-10m-cadence-daemon.md), [`subskills/performance-feedback.md`](subskills/performance-feedback.md))
+- A 10-minute loop may prepare candidates; it does not publish every 10 minutes.
+- Human approval before publishing; bulk auto-distribution disabled by default; unique edits only.
+- Official REST/Graph APIs only; zero browser automation on social platforms.
+- Records viewed rate, average view duration, completion, shares, comments, followers, confirmed campaign views, and payout at consistent maturity windows.
+- Learns per campaign and format with sample-size guardrails; never learns toward misleading hooks.
+
+### 9. Regression Fixtures ([`subskills/regression-fixtures.md`](subskills/regression-fixtures.md))
+- `clip_688_lex`, `clip_37_theo`, and `clip_794_veritasium` are permanent fixtures.
+- Theo: no debug overlay, no cursor, readable uncropped diagram, one thumbnail headline.
+- Lex: correct speaker during the conclusion, face-aware headline, clean thumbnail.
+- Veritasium: complete mystery-to-confession story retained.
+
+### 10. Fleet Publishing Constraints ([`subskills/fleet-staged-publishing.md`](subskills/fleet-staged-publishing.md))
+- Staged private release with `publishAt` and a $\ge 150$-minute transcode buffer, for authorized operations only.
+- Three GCP pods with an 85-upload safety headroom gate.
+- Clip channels cap at 2–3 clips per channel per day, spaced $\ge 4.0$ hours.
+- Bounty/payment automation is out of scope unless a documented API and explicit authorization exist.
 
 ---
 
-## 3. Installation Across All Agent CLIs
+## 3. Pipeline
 
-Run the included universal installer:
+```
+Load campaign preflight
+  -> Verify transcript (lexicon, entities, source subtitles)
+  -> Classify three axes
+  -> Select narrative boundaries and runtime
+  -> Choose layout and treatment
+  -> Render
+  -> Production gate on exported MP4 (fail closed)
+  -> Editorial score
+  -> Build five text layers + verified thumbnail
+  -> Human approval queue
+  -> Authorized submission only
+  -> Record performance feedback
+```
+
+---
+
+## 4. Installation Across All Agent CLIs
+
 ```bash
 bash install.sh
 ```
@@ -87,6 +123,6 @@ Automatically links `clip-short` across all active agent CLI environments:
 
 ---
 
-## 4. License
+## 5. License
 
 MIT License. Copyright (c) 2026 Magebase.

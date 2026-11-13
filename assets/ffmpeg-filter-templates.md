@@ -29,8 +29,11 @@ ffmpeg -y \
 
 ---
 
-## 2. 5-Phase Motivated Camera Progression
-Dynamically alternates focus between dominant speaker, standard split, and supporting card across 5 phases:
+## 2. Motivated Camera Progression (Semantic Beats Preferred)
+
+Visual focus should change on semantic beats. Use the timestamp version below only as a fallback when beat detection is unavailable. Never let an arbitrary phase boundary cut a sentence or hide the speaker who is delivering the point.
+
+Fallback 5-phase progression:
 - **Phase 1 (0.0s – 3.2s)**: $112\%$ punch-in on Speaker.
 - **Phase 2 (3.2s – 9.0s)**: Standard Golden Split ($100\%$).
 - **Phase 3 (9.0s – 14.5s)**: $108\%$ punch-in on Supporting Card.
@@ -99,3 +102,104 @@ ffmpeg -ss {START_SEC} -to {END_SEC} -i "{INPUT_VIDEO}" \
   -c:a aac -b:a 192k \
   "{OUTPUT_AUDIO}"
 ```
+
+
+---
+
+## 6. Adaptive Layout Routing
+
+Choose the graph from the source archetype and story beat; do not default to a split.
+
+| Layout | Filter recipe |
+| :--- | :--- |
+| `FULLSCREEN_PORTRAIT` | `crop=...` face-aware window, `scale=1080:1920`, no split |
+| `DYNAMIC_SPEAKER` | One full-frame source per shot; hard cuts at speaker turns |
+| `ADAPTIVE_SPLIT` | Section 1 Golden 54/46 preset |
+| `PIP` | Full-frame action + small facecam overlay in a clear corner |
+| `PROGRESSIVE_DIAGRAM` | Section 7 diagram tracking |
+| `SCENE_TRACKING` | Full-frame scene, slow pan/zoom, cuts on story beats |
+| `MINIMAL_DOCUMENTARY` | Full-frame contextual footage, restrained motion |
+
+### Full-Screen Face-Aware Crop
+```bash
+# Compute CROP_X/CROP_Y from face landmarks before building the graph.
+# Keep eyes in the upper third and preserve headroom.
+ffmpeg -y -ss {START_SEC} -to {END_SEC} -i "{INPUT_VIDEO}" \
+  -filter_complex "
+    [0:v]crop={CROP_W}:{CROP_H}:{CROP_X}:{CROP_Y},scale=1080:1920:flags=lanczos[v_out]
+  " \
+  -map "[v_out]" -map 0:a \
+  -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
+  -c:a aac -b:a 192k "{OUTPUT_MP4}"
+```
+
+### Picture-in-Picture for Action + Facecam
+```bash
+ffmpeg -y -ss {START_SEC} -to {END_SEC} -i "{INPUT_VIDEO}" \
+  -filter_complex "
+    [0:v]crop={ACTION_W}:{ACTION_H}:{ACTION_X}:{ACTION_Y},scale=1080:1920:flags=lanczos[action];
+    [0:v]crop={CAM_W}:{CAM_H}:{CAM_X}:{CAM_Y},scale=320:-1:flags=lanczos[cam];
+    [action][cam]overlay=W-w-32:160[v_out]
+  " \
+  -map "[v_out]" -map 0:a \
+  -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
+  -c:a aac -b:a 192k "{OUTPUT_MP4}"
+```
+
+---
+
+## 7. Progressive Diagram Tracking
+
+For panoramic architecture diagrams, do not permanently shrink the whole canvas into a pane. Split the diagram into semantic beats and track each referenced component.
+
+1. Detect the diagram bounds and component boxes (interface, harness, LLM, tools).
+2. Assign each component to the spoken beat that references it.
+3. For each beat, crop a readable window around the component with padding.
+4. Animate a slow pan between components within a beat; cut between beats.
+
+```bash
+# One beat: readable component crop with mild punch-in and horizontal drift.
+# CROP_X(t) moves from START_X to END_X across the beat.
+ffmpeg -y -ss {BEAT_START} -to {BEAT_END} -i "{INPUT_VIDEO}" \
+  -filter_complex "
+    [0:v]crop={COMP_W}:{COMP_H}:'{START_X}+({END_X}-{START_X})*min(t/{BEAT_DUR},1)':{COMP_Y},
+         scale=1080:-1:flags=lanczos,
+         crop=1080:1920:0:'max(0,(ih-1920)/2)'[v_out]
+  " \
+  -map "[v_out]" -map 0:a \
+  -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
+  -c:a aac -b:a 192k "{OUTPUT_MP4}"
+```
+
+Readability gate before rendering:
+- Primary labels $\ge 24	ext{px}$ at $1080$ width; secondary $\ge 18	ext{px}$.
+- No arrow or label clipped at either horizontal edge.
+- If a beat needs more width than the pane allows, use full-screen for that beat instead of shrinking further.
+
+---
+
+## 8. Debug Overlay and Cursor Prevention
+
+### Debug Overlay Prevention
+The Theo failure came from filter expressions or phase labels reaching the video. Enforce a strict boundary:
+
+1. Render display text only from the verified transcript and metadata records.
+2. Never interpolate source code, filter expressions, or internal variables into `drawtext`.
+3. Reject any text containing `if(`, `tt(`, `{`, `}`, `None`, `null`, or an unresolved `{PLACEHOLDER}` before building the graph.
+4. Escape `:`, `'`, `\`, and `%` in all drawtext strings; prefer generating an ASS subtitle file over inline `drawtext` for dynamic text.
+5. Re-inspect the exported MP4 with OCR and a contact sheet; a debug string anywhere is `REJECTED_RENDER`.
+
+```python
+FORBIDDEN_TEXT = ("if(", "tt(", "{", "}", "None", "null", "REQUIRED")
+
+def safe_overlay_text(value: str) -> str:
+    if not value or any(tok in value for tok in FORBIDDEN_TEXT):
+        raise ValueError(f"unsafe overlay text: {value!r}")
+    return value.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
+```
+
+### Cursor Prevention
+- Track the cursor path across the beat; if it sits inside the chosen crop for more than $0.5	ext{s}$, move the crop, punch into the component (cursor outside frame), or choose another beat.
+- When editing screen recordings, prefer `crop` windows that exclude the cursor travel area.
+- Never rely on a downstream blur to hide a cursor; verify in the exported MP4.
+- If cursor-free framing would destroy the content, fail closed to `HUMAN_REVIEW`.

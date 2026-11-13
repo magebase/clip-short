@@ -1,110 +1,119 @@
-# Subskill: Autonomous 10-Minute Cadence Engine & Multi-Platform Syndication
+# Subskill: Autonomous Production Cadence & Human-Gated Distribution
 
-Architecture of the continuous 600-second clipping, rendering, CDN ingestion, multi-platform publishing, bounty claiming, and cockpit telemetry loop.
-
----
-
-## 1. 10-Minute Cadence Execution Pipeline
-
-```
-  +-------------------------------------------------------------------------------+
-  |                        10-MINUTE AUTONOMOUS CADENCE ENGINE                    |
-  |                        (scripts/clipfactory_daemon_10m.py)                    |
-  +-------------------------------------------------------------------------------+
-                                          |
-  [00:00] Non-Blocking File Lock Acquisition (/tmp/clipfactory_python.lock)
-                                          |
-  [00:02] Self-Healing UTC Date Check & Quota Counter Reset (Daily Ceilings)
-                                          |
-  [00:05] Highest-EV Candidate Selection (Viral Score x Freshness x Bounty)
-                                          |
-  [00:10] Master Render with Kinetic Spring Captions (\fscx124) & Vector Emojis
-                                          |
-  [02:30] Cloudflare R2 CDN Ingestion via Wrangler (video-factory-renders/clips)
-                                          |
-  [03:00] Multi-Platform Fleet Syndication:
-          ├── 1. YouTube Shorts: Pod 03 CLIP Channel (Staged Private, 150m buffer)
-          ├── 2. TikTok: Official Content Posting API
-          ├── 3. Instagram Reels: Meta Graph API Video Container
-          └── 4. Facebook Reels: Meta Super-Channel Page Feed
-                                          |
-  [04:30] View-Gated Bounty Payout Claiming -> Lili Business Checking
-                                          |
-  [05:00] Live SQLite Ingest Sync & Cloudflare Workers Cockpit Redeployment
-                                          |
-  [10:00] Next Cycle Trigger (CADENCE_SECONDS = 600)
-```
+Autonomous work means the daemon prepares, renders, and verifies candidates without a human at the keyboard. It does not mean it publishes them. Human approval and campaign compliance gate every release.
 
 ---
 
-## 2. Highest Expected Value (EV) Ranking Formula
+## 1. Design Principles
 
-Instead of processing clips chronologically, the daemon computes the Expected Value ($EV$) of each unrendered candidate:
-
-$$EV = S_{\text{viral}} \times M_{\text{streamer\_tier}} \times M_{\text{format}} \times M_{\text{freshness}} \times M_{\text{bounty\_rate}}$$
-
-Where:
-- $S_{\text{viral}} \in [0.0, 1.0]$: Scored by Gemini Flash viral evaluation.
-- $M_{\text{streamer\_tier}}$: Tier 1 ($1.5\times$ for Theo, Primeagen, Speed, CaseOh), Tier 2 ($1.2\times$).
-- $M_{\text{format}}$: Bonus multiplier for high-converting formats ($1.3\times$ for Whiteboard Explainer & Phonk Freeze).
-- $M_{\text{freshness}} = e^{-\lambda \Delta t}$: Exponential decay favoring moments from streams in the last 24h.
-- $M_{\text{bounty\_rate}}$: Payout multiplier for active sponsor/streamer bounties ($1.4\times$).
+- **Unique edits only**: every submitted clip is a distinct edit, not a duplicated mass-produced output.
+- **Human approval required**: publishing is a human action unless a campaign explicitly and lawfully authorizes otherwise; this skill never assumes authorization.
+- **Campaign-aware**: duration, sound, required content, hashtags, and audience rules come from the loaded campaign config, not from defaults.
+- **Fail closed**: missing rights, ambiguous rules, failed QA, or low confidence goes to `HUMAN_REVIEW`, never to `READY`.
+- **No low-effort volume**: cadence cannot override quality or originality.
 
 ---
 
-## 3. Cloudflare R2 CDN Ingestion
+## 2. Autonomy Boundary
 
-Local MP4 renders are uploaded directly to the edge CDN using Wrangler CLI:
-```bash
-wrangler r2 object put video-factory-renders/clips/clip_{clip_id}.mp4 \
-  --file=/path/to/renders/clip_{clip_id}.mp4 \
-  --remote
-```
-- CDN Public Endpoint: `https://video-factory.adstim.net/renders/clips/clip_{clip_id}.mp4`
-- Ensures low-latency, zero-cost bandwidth streaming to social platform ingest servers.
+| Stage | Allowed autonomously | Blocked |
+| :--- | :--- | :--- |
+| Source discovery | Yes, within approved sources | Unapproved or unlicensed sources |
+| Campaign preflight | Yes, with fail-closed | Inventing missing rules |
+| Candidate selection | Yes, transcript-grounded | Fabricating claims |
+| Editing and rendering | Yes | Publishing during render |
+| Post-render QA | Yes, fail-closed | Waiving a failed gate |
+| Packaging | Yes, five layers | Reusing one string across layers |
+| Thumbnail | Yes, with verification | Duplicate or occluding text |
+| Upload / publish | No, unless explicitly authorized by campaign and human | Bulk auto-distribution |
+| Bounty / payment claims | No | Unsupported financial automation |
+
+Uploading to social platforms must use official APIs only. No browser automation against social platforms.
 
 ---
 
-## 4. Multi-Platform Syndication Protocol
+## 3. Production Cadence
 
-```python
-# Multi-platform publication sequence executed each cycle
-def syndicate_clip_across_fleet(clip_id, r2_url, metadata, channel_info):
-    # 1. YouTube Shorts (Pod-Clips)
-    if not is_channel_on_cooldown(channel_info["youtube_id"]):
-        publish_youtube_staged_private(
-            channel_id=channel_info["youtube_id"],
-            title=metadata["youtube_title"],
-            description=metadata["description"],
-            tags=metadata["tags"],
-            publish_delay_min=150  # 2.5 hour transcode buffer
-        )
+The cadence is a target, not a quota that justifies weak work.
 
-    # 2. TikTok Content Posting API
-    publish_tiktok_direct(
-        video_url=r2_url,
-        title=metadata["hud_headline"],
-        privacy="PUBLIC_TO_EVERYONE"
-    )
-
-    # 3. Instagram Reels
-    publish_instagram_reel(
-        video_url=r2_url,
-        caption=metadata["instagram_caption"]
-    )
-
-    # 4. Facebook Reels Super-Channel
-    publish_facebook_super_channel_reel(
-        super_channel=channel_info["super_channel"],
-        video_url=r2_url,
-        description=metadata["facebook_description"]
-    )
+```yaml
+cadence:
+  production_interval_minutes: 10
+  max_candidates_per_cycle: 1
+  min_editorial_score: 70
+  require_unique_edit: true
+  require_campaign_preflight: true
+  require_post_render_qa: true
+  require_caption_verification: true
+  human_approval_before_publish: true
 ```
 
+Each cycle:
+
+1. Pick one approved source segment.
+2. Run campaign preflight; stop on failure.
+3. Classify the source along the three axes.
+4. Cut with narrative-first boundaries.
+5. Render with the correct layout and treatment.
+6. Run the production gate on the exported MP4.
+7. Only if the gate passes, run editorial scoring.
+8. Build the five text layers and the verified thumbnail.
+9. Place the candidate in the human approval queue.
+10. Record the performance record linkage for the future submission.
+
+If any step fails, write the failure reason and continue with the next candidate. Never retry the same failed render indefinitely.
+
 ---
 
-## 5. Commercial Accounting & Bounty Claiming
+## 4. Distribution Rules
 
-- **Automated Payout Engine (`bounty_claimer.py`)**: Interrogates streamer platform APIs (e.g. Whop, CreatorBounty) for view-gate milestones ($10\text{k}, 50\text{k}, 100\text{k}$ views).
-- **Direct ACH Deposit**: Claims payouts into Lili Business Checking.
-- **Form 5472 Tax Ledger (`accounting.py`)**: Logs gross receipts, foreign-owned US single-member LLC transaction codes, and platform deductions into SQLite.
+- **Default**: no automatic publication.
+- A campaign may require a public post on a linked account. Even then, the human submits or explicitly approves the submission.
+- Duplicate submissions, near-identical reposts, and low-effort volumes are prohibited.
+- Respect per-platform and per-account cadence limits.
+- Space posts according to campaign and platform rules; do not burst.
+- If an upload is rejected or the platform reports a limit, stop and hold as a local artifact; do not hammer the API.
+- All uploads use official REST/Graph APIs with authorized tokens.
+
+---
+
+## 5. Campaign and Rights Preflight
+
+Refuse to produce when:
+
+- Campaign rules are missing or contradictory.
+- Source is not approved.
+- Rights are unclear.
+- Required sound is unavailable.
+- Required content is absent from the source.
+- Prohibited content is present.
+- The campaign duration cannot contain a complete thought.
+
+Refusal produces a clear `HUMAN_REVIEW` record, not a silent skip.
+
+---
+
+## 6. Quality and Feedback
+
+- Production gate failures reject the export regardless of editorial score.
+- Editorial scores prioritize the human review queue.
+- Actual performance metrics are recorded per clip and joined to format, runtime, and hook type in [performance-feedback.md](performance-feedback.md).
+- Learned preferences never override accuracy, originality, rights, or campaign rules.
+
+---
+
+## 7. Approval Queue
+
+Each candidate in the queue includes:
+
+- Exported MP4 path.
+- Contact sheet and QA report.
+- Production gate verdict and any failures.
+- Editorial score and dimension breakdown.
+- Five text layers.
+- Verified thumbnail.
+- Campaign preflight package.
+- Recommended publish window, if the campaign specifies one.
+- Explicit `APPROVE` / `REJECT` human decision field.
+
+Only a human `APPROVE` moves a candidate to submission. Rejection records the reason and feeds editorial learning.
