@@ -255,7 +255,7 @@ A high editorial score cannot override a critical conformance, face, object, thu
 - Keep publishing and financial operations outside the core editing skill. Do not claim automated bounty or payment collection unless a supported API and explicit authorization exist.
 - When publishing is authorized, use official APIs only, staged private release, and platform safety limits.
 
-### 10. Sole Model Critic: Muse Spark 1.3 Contributor
+### 11. Sole Model Critic: Muse Spark 1.3 Contributor
 
 All model-based critique uses **`muse-spark-1.3-contributor`** via Meta Model API (`https://api.meta.ai/v1`, Responses API), requested at `max` reasoning effort.
 
@@ -277,7 +277,6 @@ python scripts/muse_spark_critic.py critique   --video rendered.mp4 --transcript
 
 Persistence uses Cloudflare Workers + D1 + R2 under `cloudflare/clip-short-critic/`. The Worker stores critiques, findings, trajectories, preferences, and R2 asset metadata. It never stores API keys.
 
----
 ---
 
 ## Detailed Technical Guides
