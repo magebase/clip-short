@@ -4,6 +4,8 @@ Two-stage quality defense. Stage 1 protects the source and render inputs. Stage 
 
 The QA verdict is pass/fail. A single critical failure is `REJECTED_RENDER` and cannot be offset by a high editorial score.
 
+v2.1 adds four independent gate statuses: `TECHNICAL_PASS`, `EDITORIAL_PASS`, `CAMPAIGN_PASS`, and `READY_FOR_APPROVAL`. Treatment conformance, independent vision review, semantic frame utility, thumbnail QA, and campaign policy evidence are part of the editorial/campaign gates. See [treatment-conformance.md](treatment-conformance.md), [vision-review.md](vision-review.md), [evidence-backed-qa.md](evidence-backed-qa.md), and [thumbnail-qa.md](thumbnail-qa.md).
+
 ---
 
 ## 1. QA Verdict Model

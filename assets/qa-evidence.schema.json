@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "clip-short QA evidence",
+  "type": "object",
+  "required": ["gate_statuses", "manifest", "treatment_conformance", "vision_review", "thumbnail", "campaign_policy"],
+  "properties": {
+    "gate_statuses": {
+      "type": "object",
+      "required": ["technical", "editorial", "campaign", "ready_for_approval"]
+    },
+    "manifest": {
+      "type": "object",
+      "required": ["git_sha", "renderer_version", "campaign_config_hash", "source_media_hash"]
+    },
+    "treatment_conformance": {
+      "type": "object",
+      "required": ["roi", "change_basis", "beats", "object_checks"]
+    },
+    "vision_review": {
+      "type": "object",
+      "required": ["reviewer_id", "reviewer_version", "independent", "decision"]
+    },
+    "thumbnail": {
+      "type": "object",
+      "required": ["status", "metrics"],
+      "properties": {"metrics": {"type": "object", "required": ["text_blocks"]}}
+    },
+    "campaign_policy": {
+      "type": "object",
+      "required": ["campaign_id", "min_seconds", "max_seconds", "policy_source"]
+    }
+  }
+}

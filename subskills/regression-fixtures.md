@@ -165,3 +165,87 @@ Before merging or publishing a skill change:
 5. The regression results are stored with the release.
 
 The fixtures stay in the repository permanently. New source archetypes get new fixtures; existing ones are never deleted to make a release pass.
+
+---
+
+## 7. v2.1 Acceptance Checklist
+
+A release is not approved until all fourteen checks pass and evidence is attached.
+
+| # | Fixture | Check |
+| ---: | :--- | :--- |
+| 1 | Lex 688 | No microphone-only shot while an identifiable active speaker is available |
+| 2 | Lex 688 | Camera switching follows speaker turns and intentional reactions |
+| 3 | Lex 688 | HUD, captions, and thumbnail do not obscure the face |
+| 4 | Theo 37 | At least two meaningful, semantically justified diagram changes |
+| 5 | Theo 37 | Harness, model, and tool interaction readable at 360px-wide playback |
+| 6 | Theo 37 | Every diagram state matches the accompanying explanation |
+| 7 | Veritasium 794 | No long low-information shots during discovery and reveal |
+| 8 | Veritasium 794 | Flies and sickle clearly visible when referenced |
+| 9 | Veritasium 794 | Confession receives sufficient visual emphasis |
+| 10 | All three | Duration passes the actual campaign configuration |
+| 11 | All three | No caption transcription or synchronization failures |
+| 12 | All three | No duplicated or obstructive thumbnail headline |
+| 13 | All three | Automated QA attaches actual evidence from the exported video |
+| 14 | All three | Failed semantic or rendering tests cannot be overridden by a high editorial score |
+
+## 8. Required Evidence Per Fixture
+
+- `treatment_conformance.beats[]` with timestamp, utility, change, face area.
+- `vision_review.findings[]` with time, severity, issue, suggestion, decision.
+- `thumbnail.status` and mobile readability metrics.
+- `campaign` policy evidence with `campaign_id`, `min_seconds`, `max_seconds`, `policy_source`.
+- `gate_statuses` with all four statuses.
+- Reproducibility manifest with git SHA, skill version, renderer version, config hash, source hash.
+
+
+---
+
+## 9. v2.2 Evidence Acceptance
+
+A PASS is valid only when the batch validator returns `PASS`. Required per-clip evidence:
+
+- Per-clip manifest with git SHA, renderer version, campaign config hash, source media hash.
+- Diagram/supporting ROI, change basis, and object checks for diagram/split/PiP treatments.
+- Speaker face area per beat for speaker switching.
+- Independent reviewer ID/version with `independent: true`.
+- Thumbnail status, text-block evidence, and face rectangle for face-led thumbnails.
+- Campaign ID, duration window, and policy source.
+- All four gate statuses.
+
+`UNSUPPORTED_PASS` is a release blocker. `not_checked` is not a pass.
+
+---
+
+## 10. v2.3 Evidence Gates
+
+A v2.3 PASS requires:
+
+- Speaker switching: per-beat `active_speaker_id`, `visible_speaker_id`, `speaker_match_confidence`, `shot_type`, `face_bbox_norm`.
+- Diagram: per-beat `diagram_roi`, `semantic_state`, `roi_only_change`, `readable_labels`, `evidence_frame_sha256`.
+- Illustration: per-beat `expected_objects`, `observed_objects`, `semantic_relevance`, `object_bbox_norm`, `object_prominence`, `evidence_frame_sha256`.
+- Reviewer: provider, method, model, reviewer ID/version, reviewed output hash, timestamps, evidence hashes.
+- Thumbnail: headline count/bbox, focal bbox, face/eye overlap, mobile OCR, semantic match, crop completeness, thumbnail hash.
+- HUD persistence, caption review, technical inspection, campaign rule provenance, output hash, human approval state.
+
+Missing evidence is `REVIEW_REQUIRED`; contradictory PASS is `BLOCKED`.
+
+
+---
+
+## v2.4 Acceptance Checklist
+
+- Lex: every camera cut validated; no unjustified microphone-only shot; final shot justified or replaced.
+- Lex: thumbnail OCR and semantic checks are real, not `not_checked`.
+- Theo: every diagram node, label, and arrow has a bbox inside the 2% safe margin.
+- Theo: object checks use semantic identity, not text-label counts.
+- Theo: syntax and execution states communicate different concepts.
+- Theo: thumbnail does not obscure the speaker's face.
+- Veritasium: no false fly detection in the farmer scene.
+- Veritasium: the fly at the descent beat is fully inside frame.
+- Veritasium: captions do not collide with the sickle reveal.
+- Veritasium: thumbnail communicates the fly-related discovery.
+- All: required checks distinguish PASS, FAIL, and NOT_CHECKED.
+- All: renderer and reviewer versions match and are reproducible.
+- All: human approval remains separate from automated readiness.
+- All: any `not_checked` blocks PASS.

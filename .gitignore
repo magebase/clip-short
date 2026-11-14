@@ -36,3 +36,6 @@ build/
 /downloads/
 /scratch/
 /tmp/
+
+# Node
+node_modules/

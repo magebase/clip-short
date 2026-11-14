@@ -162,3 +162,25 @@ Each evaluated candidate stores:
 ```
 
 Real performance metrics are joined later by [performance-feedback.md](../subskills/performance-feedback.md) using `clip_id`.
+
+---
+
+## v2.1 Gate Separation
+
+The 100-point editorial score is secondary. It cannot compensate for a failed gate.
+
+| Gate | Verdict | Evidence |
+| :--- | :--- | :--- |
+| Technical | `TECHNICAL_PASS` | Probe, loudness, true peak, black/freeze, codec, resolution |
+| Editorial | `EDITORIAL_PASS` | Treatment conformance, vision review, frame utility, thumbnail |
+| Campaign | `CAMPAIGN_PASS` | Duration, rights, disclosures, account, hashtags, content |
+| Approval | `READY_FOR_APPROVAL` | All three pass; human approval still required |
+
+Critical failures that force `REJECTED_RENDER` regardless of score:
+
+- `TREATMENT_NOT_IMPLEMENTED`
+- `MISSING_FACE` on an active-speaker beat
+- `LOW_FRAME_UTILITY` on a setup or reveal beat
+- Thumbnail face/eye overlap or secondary text layer
+- Campaign duration or rights violation
+- Debug overlay, cursor, or accidental crop

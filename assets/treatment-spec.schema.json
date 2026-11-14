@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "clip-short TreatmentSpec",
+  "type": "object",
+  "required": ["treatment", "beats"],
+  "properties": {
+    "treatment": {"type": "string"},
+    "requires_face": {"type": "boolean"},
+    "min_frame_utility": {"type": "number"},
+    "min_beat_change": {"type": "number"},
+    "roi": {"type": ["array", "null"], "items": {"type": "integer"}, "minItems": 4, "maxItems": 4},
+    "masked_rois": {"type": "array", "items": {"type": "array", "items": {"type": "integer"}}},
+    "beats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["start", "end", "label"],
+        "properties": {
+          "start": {"type": "number"},
+          "end": {"type": "number"},
+          "label": {"type": "string"},
+          "requires_change": {"type": "boolean"},
+          "objects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "detector"],
+              "properties": {
+                "name": {"type": "string"},
+                "detector": {"type": "string"},
+                "min_count": {"type": "integer"},
+                "min_area_ratio": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

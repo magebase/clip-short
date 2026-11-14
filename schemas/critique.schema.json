@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Muse Spark clip critique",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "findings", "actions", "overall"],
+  "properties": {
+    "summary": {"type": "string", "minLength": 10},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["timestamp_sec", "severity", "category", "evidence", "explanation"],
+        "properties": {
+          "timestamp_sec": {"type": "number", "minimum": 0},
+          "severity": {"enum": ["CRITICAL", "MAJOR", "MINOR"]},
+          "category": {"type": "string", "minLength": 2},
+          "evidence": {"type": "string", "minLength": 5},
+          "explanation": {"type": "string", "minLength": 5}
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action_id", "action_type", "params", "expected_effect", "risk"],
+        "properties": {
+          "action_id": {"type": "string", "minLength": 2},
+          "action_type": {
+            "enum": [
+              "speaker_switch", "speaker_crop", "pip_resize", "diagram_reframe",
+              "diagram_step_reveal", "object_reframe", "caption_reposition",
+              "caption_style", "hud_hide", "hud_reposition",
+              "broll_insert_source_grounded", "trim_silence", "extend_reveal_hold",
+              "thumbnail_recompose", "NO_OP"
+            ]
+          },
+          "params": {"type": "object"},
+          "expected_effect": {"type": "string"},
+          "risk": {"type": "string"}
+        }
+      }
+    },
+    "overall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "editorial_score", "rationale"],
+      "properties": {
+        "decision": {"enum": ["PASS", "RENDER_REVISION", "HUMAN_REVIEW"]},
+        "editorial_score": {"type": "number", "minimum": 0, "maximum": 100},
+        "rationale": {"type": "string", "minLength": 10}
+      }
+    }
+  }
+}

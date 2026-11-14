@@ -1,4 +1,4 @@
-# clip-short v2.0
+# clip-short v2.4
 
 > **Format-aware AI Short Clipper & Vertical Video Production Skill for Agent CLIs (`agy`, `claude`, `codex`, `cursor`, `copilot`, `openhands`)**
 
@@ -10,7 +10,7 @@
 
 ## 1. Overview
 
-`clip-short` turns long-form video into verified vertical shorts ($9:16$ for YouTube Shorts, TikTok, Instagram Reels, Facebook Reels). v2.0 is a general editing system, not a single streamer recipe:
+`clip-short` turns long-form video into verified vertical shorts ($9:16$ for YouTube Shorts, TikTok, Instagram Reels, Facebook Reels). v2.4 is a general editing system, not a single streamer recipe:
 
 1. **Three-axis classification** — visual source archetype, narrative archetype, editing treatment.
 2. **Adaptive layouts** — full-screen, speaker switching, adaptive split, PiP, progressive diagram zoom, scene tracking, or minimalist documentary.
@@ -126,3 +126,18 @@ Automatically links `clip-short` across all active agent CLI environments:
 ## 5. License
 
 MIT License. Copyright (c) 2026 Magebase.
+
+
+---
+
+## Sole critic: Muse Spark 1.3 Contributor
+
+All model-based critique is locked to `muse-spark-1.3-contributor` via Meta Model API at `max` effort. No fallback, ensemble, or alternate-model second opinion is allowed. See `model/critic.lock.json`, `docs/model-management.md`, and `scripts/muse_spark_critic.py`.
+
+```bash
+export MODEL_API_KEY="…"
+export CLIP_SHORT_ALLOW_CONTRIBUTOR_DATA_USE=1
+python scripts/muse_spark_critic.py probe --effort max --video test-short.mp4
+```
+
+Cloudflare Worker + D1 + R2 persistence lives in `cloudflare/clip-short-critic/`.

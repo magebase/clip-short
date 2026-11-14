@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EditPolicy trajectory row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["video_id", "query_id", "action_id", "features", "label", "label_provenance", "created_at"],
+  "properties": {
+    "video_id": {"type": "string", "minLength": 1},
+    "query_id": {"type": "string", "minLength": 1},
+    "action_id": {"type": "string", "minLength": 1},
+    "features": {"type": "object", "additionalProperties": {"type": "number"}},
+    "label": {"type": "integer", "minimum": 0, "maximum": 4},
+    "label_provenance": {"enum": ["human_preference", "verified_outcome", "model_weak_label"]},
+    "created_at": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}

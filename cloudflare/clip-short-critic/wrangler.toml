@@ -1,0 +1,17 @@
+name = "clip-short-critic"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "clip-short-critic"
+database_id = "REPLACE_WITH_D1_ID"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "clip-short-critic-assets"
+
+[vars]
+CRITIC_MODEL = "muse-spark-1.3-contributor"
+CRITIC_PROVIDER = "Meta Model API"
+CRITIC_EFFORT = "max"

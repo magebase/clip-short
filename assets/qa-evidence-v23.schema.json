@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "clip-short v2.3 QA evidence",
+  "type": "object",
+  "required": ["output_sha256", "technical", "vision_review", "thumbnail", "caption_review", "campaign_policy", "hud_persistence", "human_approval"],
+  "properties": {
+    "output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "technical": {"type": "object", "required": ["ffprobe", "decode_test", "black_freeze_scan", "audio_loudness", "av_sync"]},
+    "speaker_matches": {"type": "array"},
+    "diagram_beats": {"type": "array"},
+    "scene_objects": {"type": "array"},
+    "vision_review": {"type": "object", "required": ["provider", "method", "model", "reviewer_id", "reviewer_version", "reviewed_output_sha256", "evidence_frame_hashes"]},
+    "thumbnail": {"type": "object", "required": ["headline_count", "headline_bbox_norm", "focal_bbox_norm", "face_eye_overlap", "mobile_ocr_pass", "semantic_match", "crop_completeness", "thumbnail_sha256"]},
+    "caption_review": {"type": "object", "required": ["transcript_provenance", "timing_alignment", "review_status", "ass_sha256"]},
+    "campaign_policy": {"type": "object", "required": ["campaign_id", "min_seconds", "max_seconds", "policy_source", "rule_id", "checked_at", "rule_excerpt", "config_hash"]},
+    "hud_persistence": {"type": "object"},
+    "human_approval": {"enum": ["PENDING", "APPROVED", "REJECTED", "CHANGES_REQUESTED"]}
+  }
+}

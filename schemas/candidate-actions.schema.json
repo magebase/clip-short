@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EditPolicy candidate action",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["query_id", "action_id", "features"],
+  "properties": {
+    "query_id": {"type": "string", "minLength": 1},
+    "action_id": {"type": "string", "minLength": 1},
+    "action_type": {"type": "string"},
+    "features": {"type": "object", "additionalProperties": {"type": "number"}}
+  }
+}

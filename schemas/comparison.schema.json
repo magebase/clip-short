@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Muse Spark blind candidate comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ranking", "rationale", "findings"],
+  "properties": {
+    "ranking": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 2
+    },
+    "rationale": {"type": "string", "minLength": 10},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "issue", "evidence", "severity"],
+        "properties": {
+          "label": {"type": "string"},
+          "issue": {"type": "string"},
+          "evidence": {"type": "string"},
+          "severity": {"enum": ["CRITICAL", "MAJOR", "MINOR"]}
+        }
+      }
+    }
+  }
+}

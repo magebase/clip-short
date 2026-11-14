@@ -1,13 +1,15 @@
 ---
 name: clip-short
-description: Format-aware Autonomous AI Short Clipper and Viral Video Production skill for Antigravity CLI (agy), Claude Code, Codex, Cursor, and multi-agent fleets. Ingests raw livestreams, podcasts, VODs, screen recordings, and narrated documentaries; classifies source visual archetype, narrative archetype, and editing treatment on three independent axes; routes to an adaptive layout engine (full-screen, dynamic speaker switching, adaptive split-screen, PiP, progressive diagram tracking, scene-by-storytelling) instead of a fixed recipe; enforces campaign-aware runtime and linguistic boundary snapping; verifies transcripts and terminology; generates separated HUD, title, caption, and thumbnail text layers; renders face-aware kinetic typography; and proves the exported MP4 with full-frame post-render QA before a human-approved, staged release. Use when the user wants to clip, edit, produce, package, score, QA, or automate viral vertical shorts, TikToks, Reels, or highlights from long-form video.
+description: Format-aware Autonomous AI Short Clipper and Viral Video Production skill for Antigravity CLI (agy), Claude Code, Codex, Cursor, and multi-agent fleets. Ingests raw livestreams, podcasts, VODs, screen recordings, and narrated documentaries; classifies source visual archetype, narrative archetype, and editing treatment on three independent axes; routes to an adaptive layout engine (full-screen, dynamic speaker switching, adaptive split-screen, PiP, progressive diagram tracking, scene-by-storytelling) instead of a fixed recipe; enforces campaign-aware runtime and linguistic boundary snapping; verifies transcripts and terminology; generates separated HUD, title, caption, and thumbnail text layers; renders face-aware kinetic typography; proves the exported MP4 with an independent vision review, treatment-conformance checks, thumbnail QA, and evidence-backed gates; and requires human approval before any staged release. Use when the user wants to clip, edit, produce, package, score, QA, or automate viral vertical shorts, TikToks, Reels, or highlights from long-form video.
 ---
 
-# Autonomous AI Short Clipper & Format-Aware Viral Video Production (clip-short v2.0)
+# Autonomous AI Short Clipper & Format-Aware Viral Video Production (clip-short v2.4)
 
 An agentic video engineering skill that ingests long-form source material, understands the source format and the story, chooses a suitable visual treatment, renders a mobile-first vertical video, and then proves from the exported MP4 that the result is correct.
 
-v2.0 replaces the fixed "one recipe for every source" model with three independent decisions:
+v2.4 keeps the three-axis router and closes the gap between claimed and visible quality: fail-closed QA, genuine multimodal semantic review, narration-to-visual timestamps, shot-level speaker checks, real object identity, diagram boundary validation, caption/object collision tests, thumbnail OCR, reproducible provenance, and campaign performance learning.
+
+v2.0 replaced the fixed "one recipe for every source" model with three independent decisions:
 
 1. **What is the source?** (visual archetype)
 2. **What is the story?** (narrative archetype)
@@ -209,13 +211,73 @@ Generate a contact sheet at 0.25s, 1.0s, every major scene transition, every maj
 - **Production quality gate — pass/fail.** Campaign compliance, rendering integrity, caption accuracy, audio, visual readability, and rights. One critical failure rejects the export regardless of editorial score.
 - **Editorial performance potential — 100 points.** Hook (15), standalone comprehension (15), narrative/payoff (20), visual relevance and progression (15), mobile framing (10), caption accuracy/readability (10), pacing and information density (10), originality and audience fit (5). This prioritizes edits; it is not a predicted probability of virality.
 
-### 9. Human-Approved Distribution and No Unsupported Payment Claims
+### 9. v2.4 Fail-Closed Semantic Quality
+
+A treatment label is a claim that must be proven against the exported MP4.
+
+- **Treatment conformance**: the planner writes a `TreatmentSpec` before rendering. After rendering, measure each semantic beat. A static diagram under a `PROGRESSIVE_DIAGRAM_ZOOM` label fails `TREATMENT_NOT_IMPLEMENTED`. A mic-only shot under `DYNAMIC_SPEAKER_SWITCHING` fails `MISSING_FACE`.
+- **Independent vision review**: the reviewer sees only exported frames, the spec, and conformance measurements. It returns structured findings and `RENDER_REVISION` on major/critical defects. The planner never approves its own render.
+- **Semantic frame utility**: empty, pale, or low-information beats fail the utility floor. Object-presence claims that need a vision model are recorded as `unverified_objects`, never silently passed.
+- **Dedicated thumbnail QA**: one headline, no subtitle fragments, no face/eye occlusion, mobile-readable after downscaling.
+- **Four statuses**: `TECHNICAL_PASS`, `EDITORIAL_PASS`, `CAMPAIGN_PASS`, `READY_FOR_APPROVAL`. One gate never compensates for another.
+- **Evidence-backed reports**: sampled timestamps, frame hashes, per-beat utility/change/face area, campaign policy, and a reproducibility manifest (git SHA, skill/renderer/classifier versions, config hash, source hash).
+
+A high editorial score cannot override a critical conformance, face, object, thumbnail, campaign, or rendering failure.
+
+- **ROI, not whole frame**: diagram and split-screen treatments compare the supporting-visual ROI only. Speaker and caption regions are excluded from the change measurement.
+- **Expected/observed objects**: every expected object is `verified`, `not_detected`, or `not_checked`. `object_checks: []` is never proof that the scene is correct.
+- **Independent reviewer identity**: reports record `reviewer_id`, `reviewer_version`, and `independent: true`; an empty findings list is not accepted as evidence without them.
+- **Thumbnail composition audit**: one declared text layer, detected face rectangle, face/headline collision check, and mobile readability.
+- **Per-clip provenance**: git SHA, renderer version, campaign config hash, and source media hash are stored per clip, never only at batch level.
+- **Batch validator**: `scripts/validate_clip_short_report.py` returns `REVIEW_REQUIRED` and `UNSUPPORTED_PASS` when a PASS lacks required evidence.
+- **Format-aware art direction**: podcasts, diagrams, illustrations, screen recordings, slides, gaming, and performance each have explicit visual rules.
+- **Speaker-to-face alignment**: every speaker-switch beat records active and visible speaker IDs, match confidence, shot type, and face box. Face area alone is not identity.
+- **Diagram legibility**: diagram treatments record ROI, semantic state, ROI-only change, readable labels, and evidence-frame hash. Complete tool flow and arrows must stay in frame.
+- **Object prominence**: illustrated narration records expected/observed objects, bbox, prominence, semantic relevance, and evidence-frame hash. Prediction without evidence is `not_checked`.
+- **HUD/caption controls**: HUD establishes the premise then fades; persistent HUD is measured. Karaoke captions are optional per format.
+- **Media inspection**: technical PASS records ffprobe, decode, black/freeze, loudness, A/V sync, SAR, and output SHA-256.
+- **Human approval**: `READY_FOR_APPROVAL` is not `APPROVED`; publishing requires a human identity, timestamp, and output hash.
+- **Fail-closed**: any required `not_checked` blocks PASS; a high editorial score never overrides a semantic failure.
+- **Semantic reviewer**: a multimodal vision model must explain what is on screen and why it matches the narration. Heuristic frame scores cannot issue a semantic PASS.
+- **Narration timeline**: every beat has a timestamp and expected visual event; an object cannot be credited before the narration introduces it.
+- **Shot-level speaker QA**: every camera cut records active speaker, visible person, shot type, intentional cutaway, and decision. Unjustified microphone shots fail.
+- **Diagram element checks**: every node, label, and arrow has a bbox; edge clipping, unreadable labels, indistinct states, and caption collisions fail.
+- **Object identity**: dark blobs, text counts, and large shapes are not identity evidence. Use a vision model or validated detector classes with bboxes and normalized prominence.
+- **Caption collision**: captions must avoid expected objects and diagram nodes, computed from bboxes.
+- **Thumbnail OCR semantics**: actual OCR and semantic match are required; `not_checked` blocks PASS.
+- **Reproducible provenance**: record clean/dirty worktree, renderer source hash, dependency lock hash, build config hash, and output hash. Reviewer version must match the artifact version.
+- **Performance learning**: record qualified campaign results; do not equate editorial scores with performance.
+
+### 10. Human-Approved Distribution and No Unsupported Payment Claims
 
 - The core deliverable is a verified video plus its submission package.
 - Automatic bulk distribution is **disabled by default**. Each publish requires explicit human approval.
 - Keep publishing and financial operations outside the core editing skill. Do not claim automated bounty or payment collection unless a supported API and explicit authorization exist.
 - When publishing is authorized, use official APIs only, staged private release, and platform safety limits.
 
+### 10. Sole Model Critic: Muse Spark 1.3 Contributor
+
+All model-based critique uses **`muse-spark-1.3-contributor`** via Meta Model API (`https://api.meta.ai/v1`, Responses API), requested at `max` reasoning effort.
+
+- No Gemini, DeepSeek, GPT, Claude, or other model may provide critique, second opinions, ensembles, or fallback reviews.
+- `model/critic.lock.json` is authoritative. Required effort is `max`; an unsupported `max` stops the run. Lower effort requires `--accept-lower-effort` and is an explicit experiment, not production.
+- Contributor mode requires `CLIP_SHORT_ALLOW_CONTRIBUTOR_DATA_USE=1`. Only enable it with rights to upload the footage and acceptance of Meta's product-improvement data use.
+- Native MP4 is uploaded through Meta Files API and referenced as an `input_file` in Responses API.
+- Every critique records model/provider, requested and confirmed effort, prompt/schema versions, request ID, usage, video SHA-256, file ID, timestamps, and caller Git SHA.
+- Deterministic tools (FFprobe, FFmpeg, OCR, ASR, geometry, hashes) may measure; they may not issue editorial or semantic critique.
+- Reproducibility: use `python scripts/muse_spark_critic.py probe --effort max --video …` before a batch.
+
+Invocation:
+
+```bash
+export MODEL_API_KEY="…"
+export CLIP_SHORT_ALLOW_CONTRIBUTOR_DATA_USE=1
+python scripts/muse_spark_critic.py critique   --video rendered.mp4 --transcript transcript.srt   --treatment treatment-spec.json --campaign campaign.json   --out critique.json
+```
+
+Persistence uses Cloudflare Workers + D1 + R2 under `cloudflare/clip-short-critic/`. The Worker stores critiques, findings, trajectories, preferences, and R2 asset metadata. It never stores API keys.
+
+---
 ---
 
 ## Detailed Technical Guides
@@ -229,8 +291,54 @@ Generate a contact sheet at 0.25s, 1.0s, every major scene transition, every maj
 - [subskills/kinetic-typography-safe-zones.md](subskills/kinetic-typography-safe-zones.md) — Face-aware safe zones, collision avoidance, and animation.
 - [subskills/faithful-metadata-packaging.md](subskills/faithful-metadata-packaging.md) — Five text layers, thumbnail construction, and curiosity gates.
 - [subskills/pre-render-quality-gates.md](subskills/pre-render-quality-gates.md) — Pre-render technical gates and full-frame post-render inspection.
+- [subskills/treatment-conformance.md](subskills/treatment-conformance.md) — TreatmentSpec, beat measurement, and conformance verdicts.
+- [subskills/vision-review.md](subskills/vision-review.md) — Independent post-render reviewer and revision loop.
+- [subskills/evidence-backed-qa.md](subskills/evidence-backed-qa.md) — Four gate statuses, evidence schema, and reproducibility manifest.
+- [subskills/thumbnail-qa.md](subskills/thumbnail-qa.md) — Single-headline, face-clear, mobile-readable thumbnail gate.
+- [subskills/speaker-camera-selection.md](subskills/speaker-camera-selection.md) — Face-first camera hierarchy and mic-only rejection.
+- [subskills/art-direction.md](subskills/art-direction.md) — Format-specific visual grammar.
+- [subskills/semantic-object-qa.md](subskills/semantic-object-qa.md) — Expected/observed object statuses and detectors.
+- [subskills/report-validation.md](subskills/report-validation.md) — Batch evidence validator and unsupported-PASS rejection.
+- [subskills/speaker-face-alignment.md](subskills/speaker-face-alignment.md) — Diarization-to-face-track alignment evidence.
+- [subskills/diagram-legibility.md](subskills/diagram-legibility.md) — Diagram ROI, complete labels, honest treatment labels.
+- [subskills/object-prominence.md](subskills/object-prominence.md) — Expected/observed object and prominence evidence.
+- [subskills/hud-caption-style.md](subskills/hud-caption-style.md) — Format-specific HUD and caption controls.
+- [subskills/media-inspection.md](subskills/media-inspection.md) — ffprobe/ffmpeg measurement contract.
+- [subskills/human-approval.md](subskills/human-approval.md) — PENDING/APPROVED/REJECTED state separation.
+- [subskills/fail-closed-qa.md](subskills/fail-closed-qa.md) — PASS/FAIL/NOT_CHECKED separation and no score compensation.
+- [subskills/semantic-vision-reviewer.md](subskills/semantic-vision-reviewer.md) — Multimodal reviewer evidence and independence.
+- [subskills/narration-visual-timeline.md](subskills/narration-visual-timeline.md) — Timestamped expected visual events.
+- [subskills/shot-level-speaker-qa.md](subskills/shot-level-speaker-qa.md) — Every-cut speaker and microphone-shot validation.
+- [subskills/diagram-state-validation.md](subskills/diagram-state-validation.md) — Diagram element bboxes, boundaries, and semantic states.
+- [subskills/object-identity-and-collision.md](subskills/object-identity-and-collision.md) — Identity evidence, normalized prominence, edge and caption collisions.
+- [subskills/provenance-reproducibility.md](subskills/provenance-reproducibility.md) — Clean/dirty state, source/lock/config hashes.
+- [subskills/caption-style-system.md](subskills/caption-style-system.md) — Format-specific HUD and phrase captions.
+- [subskills/thumbnail-ocr-semantics.md](subskills/thumbnail-ocr-semantics.md) — Actual OCR and semantic thumbnail validation.
+- [subskills/performance-learning.md](subskills/performance-learning.md) — Qualified campaign results and cost-aware optimization.
+
+## Muse Spark Critic and EditPolicy
+
+- [model/critic.lock.json](model/critic.lock.json) — Locked sole critic identity and effort.
+- [scripts/muse_spark_critic.py](scripts/muse_spark_critic.py) — Probe, critique, and blind comparison client.
+- [scripts/train_edit_policy.py](scripts/train_edit_policy.py) — LightGBM LambdaRank action-selector training.
+- [scripts/rank_edit_actions.py](scripts/rank_edit_actions.py) — Action ranking at inference time.
+- [docs/model-management.md](docs/model-management.md) — Lock, versioning, API key, and contributor consent.
+- [docs/opencode-integration.md](docs/opencode-integration.md) — OpenCode provider fragment and distinctions.
+- [docs/invocation-guide.md](docs/invocation-guide.md) — Probe, critique, compare, and persistence.
+- [docs/training-guide.md](docs/training-guide.md) — Trajectory labels, features, splits, and promotion.
+- [docs/edit-policy-architecture.md](docs/edit-policy-architecture.md) — State/action loop and role separation.
+- [docs/critic-explanation-guide.md](docs/critic-explanation-guide.md) — Required fields for every suggested edit.
+- [schemas/critique.schema.json](schemas/critique.schema.json) — Timestamped critique/action schema.
+- [schemas/comparison.schema.json](schemas/comparison.schema.json) — Blind comparison schema.
+- [schemas/trajectory.schema.json](schemas/trajectory.schema.json) — EditPolicy training row.
+- [cloudflare/clip-short-critic/](cloudflare/clip-short-critic/) — Worker + D1 schema + R2 bindings.
+- [assets/treatment-spec.schema.json](assets/treatment-spec.schema.json) — TreatmentSpec JSON schema.
+- [assets/qa-evidence.schema.json](assets/qa-evidence.schema.json) — QA evidence JSON schema.
+- [assets/qa-evidence-v23.schema.json](assets/qa-evidence-v23.schema.json) — v2.3 evidence schema.
+- [assets/qa-evidence-v24.schema.json](assets/qa-evidence-v24.schema.json) — v2.4 strict semantic evidence schema.
+- [references/v2.4-quality-contract.md](references/v2.4-quality-contract.md) — v2.4 fail-closed semantic, timeline, shot, object, diagram, thumbnail, and provenance contract.
 - [references/viral-scoring-rubric.md](references/viral-scoring-rubric.md) — Pass/fail production gate and calibrated editorial scoring.
-- [subskills/regression-fixtures.md](subskills/regression-fixtures.md) — Lex, Theo, and Veritasium v2.0 regression checklist.
+- [subskills/regression-fixtures.md](subskills/regression-fixtures.md) — Lex, Theo, and Veritasium v2.4 regression checklist.
 - [subskills/performance-feedback.md](subskills/performance-feedback.md) — Real campaign metrics and format-level learning.
 - [subskills/fleet-staged-publishing.md](subskills/fleet-staged-publishing.md) — Human-approved staged private release and pod quotas.
 - [subskills/autonomous-10m-cadence-daemon.md](subskills/autonomous-10m-cadence-daemon.md) — Production cadence with human approval gates.
